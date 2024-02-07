@@ -3,6 +3,9 @@ package com.jtbc.weeklymenu.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,6 +18,6 @@ public class Menu {
     private String nameOfMenu;
     // Однонаправленное отношение один ко многим
     @OneToMany(mappedBy = "menu")
-    private Set<Recipes> recipes;
+    private List<Recipes> recipes = new ArrayList<>();
 }
 
