@@ -80,4 +80,8 @@ public class MenuController {
             return new ResponseEntity<>("Failed to calculate required products: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("getMenuWithRecipe/{menuId}")
+    public Menu getMenuWithRecipes(@PathVariable Long menuId) {
+        return menuService.findMenuWithRecipes(menuId);
+    }
 }

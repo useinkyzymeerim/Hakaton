@@ -28,6 +28,7 @@ import java.util.Optional;
         void delete(Long menuId);
         public Map<Products, Integer> calculateRequiredProductsForMenu (Long id);
 
+       public Menu findMenuWithRecipes(Long menuId);
 
 
 

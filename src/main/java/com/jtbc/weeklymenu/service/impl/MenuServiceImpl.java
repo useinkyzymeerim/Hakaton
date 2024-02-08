@@ -72,5 +72,11 @@ public class MenuServiceImpl implements MenuService {
 
             return productQuantityMap;
         }
+
+    @Override
+    public Menu findMenuWithRecipes(Long menuId) {
+        return menuRepo.findMenuWithRecipes(menuId);
+    }
+
     }
 
