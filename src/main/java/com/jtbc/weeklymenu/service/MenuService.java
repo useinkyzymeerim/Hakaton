@@ -1,25 +1,21 @@
 package com.jtbc.weeklymenu.service;
 
+import com.jtbc.weeklymenu.dto.MenuDTO;
+import com.jtbc.weeklymenu.dto.MenuWithRecipeDto;
 import com.jtbc.weeklymenu.entity.Menu;
 import com.jtbc.weeklymenu.entity.Products;
-import com.jtbc.weeklymenu.entity.RecipesWithProducts;
-import com.jtbc.weeklymenu.repo.MenuRepo;
-import com.jtbc.weeklymenu.repo.RecipesWithProductsRepo;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
-    public interface MenuService {
+public interface MenuService {
         Menu create(Menu menu);
         List<Menu> findAll();
+        List<MenuDTO> getAllMenus();
 
 
-        Menu findById(Long id);
+        public Menu getMenu(Long menuId);
 
 
         Menu update(Menu menu);
@@ -28,8 +24,10 @@ import java.util.Optional;
         void delete(Long menuId);
         public Map<Products, Integer> calculateRequiredProductsForMenu (Long id);
 
-       public Menu findMenuWithRecipes(Long menuId);
 
 
 
+    List<MenuWithRecipeDto> getMenuWithRecipes(Long menuId);
+
+        Menu findById(Long id);
 }

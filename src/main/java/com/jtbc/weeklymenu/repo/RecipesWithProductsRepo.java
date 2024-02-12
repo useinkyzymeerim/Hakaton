@@ -17,8 +17,10 @@ public interface RecipesWithProductsRepo extends JpaRepository<RecipesWithProduc
     List<RecipesWithProducts> findByRecipe(Recipes recipe);
 
     // Найти все записи, связанные с конкретным продуктом
-    List<RecipesWithProducts> findByProduct(Products product);
 
+
+    @Query("SELECT rp FROM RecipesWithProducts rp WHERE rp.product = :productName")
+    List<RecipesWithProducts> findByProduct(String productName);
     List<RecipesWithProducts> findByRecipe_Menu_Id(Long menuId);
     // Найти общее количество продуктов для конкретного рецепта
     @Query("SELECT SUM(rwp.quantityOfProduct) FROM RecipesWithProducts rwp WHERE rwp.recipe.id = :recipeId")

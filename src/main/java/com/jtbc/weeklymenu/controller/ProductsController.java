@@ -1,5 +1,6 @@
 package com.jtbc.weeklymenu.controller;
 
+import com.jtbc.weeklymenu.dto.ProductWithRecipesDTO;
 import com.jtbc.weeklymenu.entity.Menu;
 import com.jtbc.weeklymenu.entity.Products;
 import com.jtbc.weeklymenu.repo.ProductRepo;
@@ -25,6 +26,16 @@ public class ProductsController {
     @GetMapping("/product/{id}")
     public Products getByProductId(@PathVariable Long id) {
         return productService.findById(id);
+    }
+
+    @GetMapping("/recipes-by-product-name")
+    public ResponseEntity<List<String>> getRecipesByProductName(@RequestParam String productName) {
+        List<String> recipeNames = productService.getRecipesByProductName(productName);
+        if (recipeNames != null) {
+            return ResponseEntity.ok(recipeNames);
+        } else {
+            return ResponseEntity.notFound().build(); // вернуть 404, если продукт не найден
+        }
     }
     @PostMapping("/createProducts")
     public ResponseEntity<Products> createProducts(@RequestBody Products products) {

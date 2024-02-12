@@ -1,12 +1,10 @@
 package com.jtbc.weeklymenu.controller;
 
+import com.jtbc.weeklymenu.dto.MenuDTO;
+import com.jtbc.weeklymenu.dto.MenuWithRecipeDto;
 import com.jtbc.weeklymenu.entity.Menu;
 import com.jtbc.weeklymenu.entity.Products;
-import com.jtbc.weeklymenu.entity.Recipes;
 import com.jtbc.weeklymenu.service.MenuService;
-import com.jtbc.weeklymenu.service.RecipesService;
-import com.jtbc.weeklymenu.service.RecipesWithProductsService;
-import com.jtbc.weeklymenu.service.impl.MenuServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,52 +16,24 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/menus")
 public class MenuController {
     private final MenuService menuService;
 
-    @GetMapping("/menus")
-    public List<Menu> getAllMenu() {
-        return menuService.findAll();
+    @GetMapping("/getAllMenus")
+    public List<MenuDTO> getAllMenus() {
+        return menuService.getAllMenus();
     }
 
-    @GetMapping("/menus/{id}")
-    public Menu getByMenuId(@PathVariable Long id) {
-        return menuService.findById(id);
-    }
-    @PostMapping("/createMenu")
-    public ResponseEntity<Menu> createMenu(@RequestBody Menu menu) {
-        Menu createdMenu = menuService.create(menu);
-        return new ResponseEntity<>(createdMenu, HttpStatus.CREATED);
-    }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Menu> updateMenu(@RequestParam("id") Long id, @RequestBody Menu updatedMenu) {
-        Menu existingMenu = menuService.findById(id);
 
-        if (existingMenu == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("getMenuWithRecipe/{menuId}")
+    public ResponseEntity<MenuWithRecipeDto> getMenuWithRecipes(@PathVariable Long menuId) {
+        List<MenuWithRecipeDto> menuWithRecipesDTOList = menuService.getMenuWithRecipes(menuId);
+        if (menuWithRecipesDTOList.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-
-
-        existingMenu.setNameOfMenu(updatedMenu.getNameOfMenu());
-
-
-        Menu updatedMenuEntity = menuService.update(existingMenu);
-        return new ResponseEntity<>(updatedMenuEntity, HttpStatus.OK);
+        return ResponseEntity.ok(menuWithRecipesDTOList.get(0));
     }
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteMenu(@PathVariable("id") Long id) {
-        Menu existingMenu = menuService.findById(id);
-
-        if (existingMenu == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        menuService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-
     @GetMapping("/{menuId}/requiredProducts")
     public ResponseEntity<?> getRequiredProductsForMenu(@PathVariable Long menuId) {
         try {
@@ -80,8 +50,42 @@ public class MenuController {
             return new ResponseEntity<>("Failed to calculate required products: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("getMenuWithRecipe/{menuId}")
-    public Menu getMenuWithRecipes(@PathVariable Long menuId) {
-        return menuService.findMenuWithRecipes(menuId);
+
+    @PostMapping("/createMenu")
+    public ResponseEntity<Menu> createMenu(@RequestBody Menu menu) {
+        Menu createdMenu = menuService.create(menu);
+        return new ResponseEntity<>(createdMenu, HttpStatus.CREATED);
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Menu> updateMenu(@RequestParam("id") Long id, @RequestBody Menu updatedMenu) {
+        Menu existingMenu = menuService.findById(id);
+
+        if (existingMenu == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+
+        existingMenu.setNameOfMenu(updatedMenu.getNameOfMenu());
+
+
+        Menu updatedMenuEntity = menuService.update(existingMenu);
+        return new ResponseEntity<>(updatedMenuEntity, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteMenu(@PathVariable("id") Long id) {
+        Menu existingMenu = menuService.findById(id);
+
+        if (existingMenu == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        menuService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+
 }
+

@@ -11,11 +11,12 @@ import java.util.List;
 @Repository
 public interface MenuRepo extends JpaRepository<Menu,Long> {
 
-    @Query("SELECT m.id AS menuId, m.nameOfMenu, r.id AS recipeId, r.nameOfFood\n" +
-            "FROM Menu m\n" +
+   @Query("SELECT m.id AS menuId, m.nameOfMenu, r.id AS recipeId, r.nameOfFood\n" + "FROM Menu m\n" +
             "LEFT JOIN m.recipes r\n" +
             "WHERE m.id = :menuId")
-    Menu findMenuWithRecipes(@Param("menuId") Long menuId);
+   List<Object[]> findMenuWithRecipes(@Param("menuId") Long menuId);
+
+
 
 
 }

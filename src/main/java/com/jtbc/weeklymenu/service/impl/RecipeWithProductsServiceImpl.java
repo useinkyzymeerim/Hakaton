@@ -1,23 +1,26 @@
 package com.jtbc.weeklymenu.service.impl;
 
-import com.jtbc.weeklymenu.entity.Menu;
+import com.jtbc.weeklymenu.dto.ProductWithRecipesDTO;
+import com.jtbc.weeklymenu.dto.RecipeWithProductDTO;
 import com.jtbc.weeklymenu.entity.Products;
+import com.jtbc.weeklymenu.entity.Recipes;
 import com.jtbc.weeklymenu.entity.RecipesWithProducts;
 import com.jtbc.weeklymenu.repo.RecipesWithProductsRepo;
+import com.jtbc.weeklymenu.service.RecipesService;
 import com.jtbc.weeklymenu.service.RecipesWithProductsService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RecipeWithProductsServiceImpl implements RecipesWithProductsService {
     private final RecipesWithProductsRepo recipesWithProductsRepo;
+    private final RecipesService recipesService;
     @Override
     public RecipesWithProducts create(RecipesWithProducts recipesWithProducts) {
         return recipesWithProductsRepo.save(recipesWithProducts);
@@ -56,4 +59,14 @@ public class RecipeWithProductsServiceImpl implements RecipesWithProductsService
         return recipesWithProductsRepo.findAll();
     }
 
+
+@Override
+public RecipeWithProductDTO mapToDTO(RecipesWithProducts rp) {
+        RecipeWithProductDTO dto = new RecipeWithProductDTO();
+        dto.setRecipeId(rp.getRecipe().getId());
+        dto.setRecipeName(rp.getRecipe().getNameOfFood());
+        dto.setQuantityOfProduct(rp.getQuantityOfProduct());
+        return dto;
+    }
 }
+

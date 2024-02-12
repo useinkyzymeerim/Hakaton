@@ -1,11 +1,9 @@
 package com.jtbc.weeklymenu.controller;
 
-import com.jtbc.weeklymenu.dto.RecipeWithProductsDTO;
-import com.jtbc.weeklymenu.entity.Menu;
+import com.jtbc.weeklymenu.dto.RecipeDetailsDTO;
+import com.jtbc.weeklymenu.dto.RecipesDto;
 import com.jtbc.weeklymenu.entity.Recipes;
-import com.jtbc.weeklymenu.entity.RecipesWithProducts;
 import com.jtbc.weeklymenu.service.RecipesService;
-import com.jtbc.weeklymenu.service.RecipesWithProductsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,20 +17,26 @@ import java.util.List;
 public class RecipesController {
 
     private final RecipesService recipeService;
-    @GetMapping("/recipes")
-    public List<Recipes> getAllRecipes() {
-        return recipeService.findAll();
+
+    @GetMapping("/getAllRecipes")
+    public List<RecipesDto> getAllRecipes() {
+        return recipeService.getAllRecipes();
     }
 
-    @GetMapping("/recipes/{id}")
-    public Recipes getByRecipeId(@PathVariable Long id) {
-        return recipeService.findById(id);
+
+
+       @GetMapping("/recipeDetails/{recipeId}")
+    public ResponseEntity<List<RecipeDetailsDTO>> getRecipeDetails(@PathVariable Long recipeId) {
+        List<RecipeDetailsDTO> recipeDetails = recipeService.findRecipeDetails(recipeId);
+        return ResponseEntity.ok(recipeDetails);
     }
+
     @PostMapping("/createRecipe")
     public ResponseEntity<Recipes> createRecipes(@RequestBody Recipes recipes) {
         Recipes createdRecipe = recipeService.create(recipes);
         return new ResponseEntity<>(createdRecipe, HttpStatus.CREATED);
     }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<Recipes> updateRecipes(@RequestParam("id") Long id, @RequestBody Recipes updatedRecipe) {
         Recipes existingRecipe = recipeService.findById(id);
@@ -48,6 +52,7 @@ public class RecipesController {
         Recipes updatedRecipeEntity = recipeService.update(existingRecipe);
         return new ResponseEntity<>(updatedRecipeEntity, HttpStatus.OK);
     }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteRecipe(@PathVariable("id") Long id) {
         Recipes existingRecipe = recipeService.findById(id);
@@ -61,9 +66,15 @@ public class RecipesController {
     }
 
 
-
-
-
-
+    @GetMapping("/{recipeId}/unique-details")
+    public ResponseEntity<List<RecipeDetailsDTO>> getUniqueRecipeDetails(@PathVariable Long recipeId) {
+        List<RecipeDetailsDTO> uniqueDetails = recipeService.findUniqueRecipeDetails(recipeId);
+        return ResponseEntity.ok(uniqueDetails);
+    }
 }
+
+
+
+
+
 

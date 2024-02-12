@@ -1,6 +1,7 @@
 package com.jtbc.weeklymenu.service.impl;
 
-import com.jtbc.weeklymenu.entity.Menu;
+import com.jtbc.weeklymenu.dto.RecipeDetailsDTO;
+import com.jtbc.weeklymenu.dto.RecipesDto;
 import com.jtbc.weeklymenu.entity.Recipes;
 import com.jtbc.weeklymenu.repo.RecipesRepo;
 import com.jtbc.weeklymenu.service.RecipesService;
@@ -8,8 +9,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,34 @@ public class RecipeServiceImpl implements RecipesService {
 
 
     @Override
-    public List<Recipes> findAll () {
-        return recipesRepo.findAll();
+    public List<RecipesDto> getAllRecipes () {
+        List<Recipes> recipes = recipesRepo.findAll();
+        return recipes.stream().map(recipes1 -> {
+                RecipesDto dto = new RecipesDto();
+                dto.setRecipeId(recipes1.getId());
+                dto.setNameOfFood(recipes1.getNameOfFood());
+                return dto;}).collect(Collectors.toList());
+
     }
+
+    @Override
+
+    public List<RecipeDetailsDTO> findRecipeDetails(Long recipeId) {
+        return recipesRepo.findRecipeDetails(recipeId);
+    }
+    @Override
+    public List<RecipeDetailsDTO> findUniqueRecipeDetails(Long recipeId) {
+        Set<RecipeDetailsDTO> uniqueRecipes = new HashSet<>();
+        List<RecipeDetailsDTO> allRecipes = recipesRepo.findRecipeDetails(recipeId);
+
+        for (RecipeDetailsDTO recipe : allRecipes) {
+            if (!uniqueRecipes.contains(recipe)) {
+                uniqueRecipes.add(recipe);
+            }
+        }
+
+        return new ArrayList<>(uniqueRecipes);
+    }
+
+
 }
