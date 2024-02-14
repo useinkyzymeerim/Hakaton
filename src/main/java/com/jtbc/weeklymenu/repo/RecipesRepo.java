@@ -1,7 +1,6 @@
 package com.jtbc.weeklymenu.repo;
 
 import com.jtbc.weeklymenu.dto.RecipeDetailsDTO;
-import com.jtbc.weeklymenu.dto.RecipesDto;
 import com.jtbc.weeklymenu.entity.Recipes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,10 +17,8 @@ public interface RecipesRepo extends JpaRepository<Recipes,Long> {
                 "JOIN r.recipesWithProducts rp " +
                 "JOIN rp.product p " +
                 "WHERE r.id = :recipeId")
-        List<RecipeDetailsDTO> findRecipeDetails(@Param("recipeId") Long recipeId);
-
-
-
+    List<RecipeDetailsDTO> findRecipeDetails(@Param("recipeId") Long recipeId);
+    List<Recipes> findByNameOfFoodIgnoreCase(String recipeName);
 }
 
 

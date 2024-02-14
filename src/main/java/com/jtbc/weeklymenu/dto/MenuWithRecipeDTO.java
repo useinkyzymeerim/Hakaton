@@ -4,8 +4,8 @@ import lombok.Data;
 
 import java.util.List;
 @Data
-public class MenuWithRecipeDto {
+public class MenuWithRecipeDTO {
     private Long menuId;
     private String nameOfMenu;
-    private List<RecipesDto> recipes;
+    private List<RecipesDTO> recipes;
 }

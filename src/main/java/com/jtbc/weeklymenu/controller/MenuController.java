@@ -1,9 +1,12 @@
 package com.jtbc.weeklymenu.controller;
 
 import com.jtbc.weeklymenu.dto.MenuDTO;
-import com.jtbc.weeklymenu.dto.MenuWithRecipeDto;
+import com.jtbc.weeklymenu.dto.MenuWithRecipeDTO;
+import com.jtbc.weeklymenu.dto.ResponseMessageAPI;
 import com.jtbc.weeklymenu.entity.Menu;
 import com.jtbc.weeklymenu.entity.Products;
+import com.jtbc.weeklymenu.enums.ResultCode;
+import com.jtbc.weeklymenu.enums.ResultCodeAPI;
 import com.jtbc.weeklymenu.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,21 +24,37 @@ public class MenuController {
     private final MenuService menuService;
 
     @GetMapping("/getAllMenus")
-    public List<MenuDTO> getAllMenus() {
-        return menuService.getAllMenus();
+    public ResponseMessageAPI<List<MenuDTO>> getAllMenus() {
+        try {
+            return new ResponseMessageAPI<>(
+                    menuService.getAllMenus(),
+                    ResultCodeAPI.SUCCESS,
+                    "SUCCESS",
+                    "SUCCESS",
+                    ResultCode.OK.getHttpCode()
+            );
+        } catch (NullPointerException exception) {
+            System.out.println(exception.getMessage());
+            return new ResponseMessageAPI<>(
+                    null,
+                    ResultCodeAPI.FAIL,
+                    exception.getClass().getSimpleName(),
+                    exception.getMessage(),
+                    ResultCode.NOT_FOUND.getHttpCode()
+            );
+        }
+
     }
-
-
     @GetMapping("getMenuWithRecipe/{menuId}")
-    public ResponseEntity<MenuWithRecipeDto> getMenuWithRecipes(@PathVariable Long menuId) {
-        List<MenuWithRecipeDto> menuWithRecipesDTOList = menuService.getMenuWithRecipes(menuId);
+    public ResponseEntity<MenuWithRecipeDTO>getMenuWithRecipes(@PathVariable Long menuId) {
+        List<MenuWithRecipeDTO> menuWithRecipesDTOList = menuService.getMenuWithRecipes(menuId);
         if (menuWithRecipesDTOList.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(menuWithRecipesDTOList.get(0));
     }
     @GetMapping("/{menuId}/requiredProducts")
-    public ResponseEntity<?> getRequiredProductsForMenu(@PathVariable Long menuId) {
+     public ResponseEntity<?> getRequiredProductsForMenu(@PathVariable Long menuId) {
         try {
             Map<Products, Integer> productQuantityMap = menuService.calculateRequiredProductsForMenu(menuId);
 
@@ -50,41 +69,6 @@ public class MenuController {
             return new ResponseEntity<>("Failed to calculate required products: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @PostMapping("/createMenu")
-    public ResponseEntity<Menu> createMenu(@RequestBody Menu menu) {
-        Menu createdMenu = menuService.create(menu);
-        return new ResponseEntity<>(createdMenu, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Menu> updateMenu(@RequestParam("id") Long id, @RequestBody Menu updatedMenu) {
-        Menu existingMenu = menuService.findById(id);
-
-        if (existingMenu == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-
-        existingMenu.setNameOfMenu(updatedMenu.getNameOfMenu());
-
-
-        Menu updatedMenuEntity = menuService.update(existingMenu);
-        return new ResponseEntity<>(updatedMenuEntity, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteMenu(@PathVariable("id") Long id) {
-        Menu existingMenu = menuService.findById(id);
-
-        if (existingMenu == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        menuService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
 
 
 }

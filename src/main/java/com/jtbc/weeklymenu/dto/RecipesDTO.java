@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductWithQuantityDTO {
-    private String productName;
-    private int quantity;
+public class RecipesDTO {
+    private Long recipeId;
+    private String nameOfFood;
 }

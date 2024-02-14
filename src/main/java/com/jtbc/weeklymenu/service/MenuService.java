@@ -1,7 +1,7 @@
 package com.jtbc.weeklymenu.service;
 
 import com.jtbc.weeklymenu.dto.MenuDTO;
-import com.jtbc.weeklymenu.dto.MenuWithRecipeDto;
+import com.jtbc.weeklymenu.dto.MenuWithRecipeDTO;
 import com.jtbc.weeklymenu.entity.Menu;
 import com.jtbc.weeklymenu.entity.Products;
 
@@ -10,24 +10,12 @@ import java.util.Map;
 
 
 public interface MenuService {
-        Menu create(Menu menu);
-        List<Menu> findAll();
+
+        List<MenuDTO> findAll() throws Exception;
         List<MenuDTO> getAllMenus();
+        List<MenuWithRecipeDTO> getMenuWithRecipes(Long menuId);
 
+        MenuDTO findById(Long id);
+         Map<Products, Integer> calculateRequiredProductsForMenu (Long id);
 
-        public Menu getMenu(Long menuId);
-
-
-        Menu update(Menu menu);
-
-
-        void delete(Long menuId);
-        public Map<Products, Integer> calculateRequiredProductsForMenu (Long id);
-
-
-
-
-    List<MenuWithRecipeDto> getMenuWithRecipes(Long menuId);
-
-        Menu findById(Long id);
 }

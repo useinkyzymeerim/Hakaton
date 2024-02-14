@@ -37,36 +37,5 @@ public class ProductsController {
             return ResponseEntity.notFound().build(); // вернуть 404, если продукт не найден
         }
     }
-    @PostMapping("/createProducts")
-    public ResponseEntity<Products> createProducts(@RequestBody Products products) {
-        Products createdProducts = productService.create(products);
-        return new ResponseEntity<>(createdProducts, HttpStatus.CREATED);
-    }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Products> updateProducts(@RequestParam("id") Long id, @RequestBody Products updatedProduct) {
-        Products existingProducts = productService.findById(id);
-
-        if (existingProducts == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-
-        existingProducts.setProductName(updatedProduct.getProductName());
-
-
-        Products updatedProductsEntity = productService.update(existingProducts);
-        return new ResponseEntity<>(updatedProductsEntity, HttpStatus.OK);
-    }
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteProducts(@PathVariable("id") Long id) {
-        Products existingProducts = productService.findById(id);
-
-        if (existingProducts == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        productService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 
 }

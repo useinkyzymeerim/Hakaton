@@ -7,15 +7,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MenuRepo extends JpaRepository<Menu,Long> {
-
-   @Query("SELECT m.id AS menuId, m.nameOfMenu, r.id AS recipeId, r.nameOfFood\n" + "FROM Menu m\n" +
-            "LEFT JOIN m.recipes r\n" +
-            "WHERE m.id = :menuId")
-   List<Object[]> findMenuWithRecipes(@Param("menuId") Long menuId);
-
 
 
 

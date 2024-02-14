@@ -1,9 +1,11 @@
 package com.jtbc.weeklymenu.service.impl;
 
 import com.jtbc.weeklymenu.dto.RecipeDetailsDTO;
-import com.jtbc.weeklymenu.dto.RecipesDto;
+import com.jtbc.weeklymenu.dto.RecipesDTO;
 import com.jtbc.weeklymenu.entity.Recipes;
+import com.jtbc.weeklymenu.entity.RecipesWithProducts;
 import com.jtbc.weeklymenu.repo.RecipesRepo;
+import com.jtbc.weeklymenu.repo.RecipesWithProductsRepo;
 import com.jtbc.weeklymenu.service.RecipesService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,67 +18,59 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecipeServiceImpl implements RecipesService {
     private final RecipesRepo recipesRepo;
-    @Override
-    public Recipes create(Recipes recipes) {
-        Recipes recipes1 = new Recipes();
-
-        return recipesRepo.save(recipes);
-    }
-
+    private final RecipesWithProductsRepo recipesWithProductsRepo;
     @Override
     public Recipes findById(Long id) {
         return recipesRepo.findById(id).orElse(null);
     }
-
     @Override
-    public Recipes update(Recipes recipes) {
-        Optional<Recipes> recipesOptional = recipesRepo.findById(recipes.getId());
-        if (recipesOptional.isPresent()) {
-            Recipes existingRecipes = recipesOptional.get();
-            existingRecipes.setNameOfFood(recipes.getNameOfFood());
-            return recipesRepo.save(existingRecipes);
-        } else {
-            throw new RuntimeException("Menu not found");
-        }
-    }
-
-    @Override
-    public void delete (Long id){
-        Recipes existingRecipes = recipesRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Recipes not found with id: " + id));
-
-        recipesRepo.delete(existingRecipes);
-    }
-
-
-    @Override
-    public List<RecipesDto> getAllRecipes () {
+    public List<RecipesDTO> getAllRecipes () {
         List<Recipes> recipes = recipesRepo.findAll();
         return recipes.stream().map(recipes1 -> {
-                RecipesDto dto = new RecipesDto();
+                RecipesDTO dto = new RecipesDTO();
                 dto.setRecipeId(recipes1.getId());
                 dto.setNameOfFood(recipes1.getNameOfFood());
                 return dto;}).collect(Collectors.toList());
-
     }
-
     @Override
-
     public List<RecipeDetailsDTO> findRecipeDetails(Long recipeId) {
         return recipesRepo.findRecipeDetails(recipeId);
     }
+
+
     @Override
-    public List<RecipeDetailsDTO> findUniqueRecipeDetails(Long recipeId) {
-        Set<RecipeDetailsDTO> uniqueRecipes = new HashSet<>();
-        List<RecipeDetailsDTO> allRecipes = recipesRepo.findRecipeDetails(recipeId);
+    public List<RecipesDTO> findByProduct(String productName) {
+        List<RecipesWithProducts> recipesWithProductsList = recipesWithProductsRepo.findByProduct_ProductName(productName);
 
-        for (RecipeDetailsDTO recipe : allRecipes) {
-            if (!uniqueRecipes.contains(recipe)) {
-                uniqueRecipes.add(recipe);
-            }
-        }
+        // Преобразование списка объектов RecipesWithProducts в список объектов RecipeDTO
+        List<RecipesDTO> recipesDTOList = recipesWithProductsList.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
 
-        return new ArrayList<>(uniqueRecipes);
+        return recipesDTOList;
+    }
+
+    private RecipesDTO convertToDTO(RecipesWithProducts recipesWithProducts) {
+        RecipesDTO recipeDTO = new RecipesDTO();
+        recipeDTO.setRecipeId(recipesWithProducts.getRecipe().getId());
+        recipeDTO.setNameOfFood(recipesWithProducts.getRecipe().getNameOfFood());
+
+        return recipeDTO;
+    }
+    @Override
+    public List<RecipesDTO> findByRecipeNameIgnoreCase(String recipeName) {
+        List<Recipes> recipes = recipesRepo.findByNameOfFoodIgnoreCase(recipeName);
+        return recipes.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private RecipesDTO convertToDTO(Recipes recipe) {
+        RecipesDTO recipeDTO = new RecipesDTO();
+        recipeDTO.setRecipeId(recipe.getId());
+        recipeDTO.setNameOfFood(recipe.getNameOfFood());
+
+        return recipeDTO;
     }
 
 

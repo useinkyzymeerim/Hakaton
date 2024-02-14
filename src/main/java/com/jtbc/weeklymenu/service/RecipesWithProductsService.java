@@ -8,13 +8,11 @@ import java.util.List;
 
 
 public interface RecipesWithProductsService {
-    RecipesWithProducts create(RecipesWithProducts recipesWithProducts);
     RecipesWithProducts findById(Long id);
-    RecipesWithProducts update(RecipesWithProducts recipesWithProducts);
-    void delete(Long id);
     List<RecipesWithProducts> findAll();
 
-    RecipeWithProductDTO mapToDTO(RecipesWithProducts rp);
+
+
 
 
 }

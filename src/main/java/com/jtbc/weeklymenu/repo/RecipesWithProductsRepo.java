@@ -13,28 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface RecipesWithProductsRepo extends JpaRepository<RecipesWithProducts,Long> {
-    // Найти все записи, связанные с конкретным рецептом
-    List<RecipesWithProducts> findByRecipe(Recipes recipe);
 
-    // Найти все записи, связанные с конкретным продуктом
-
-
-    @Query("SELECT rp FROM RecipesWithProducts rp WHERE rp.product = :productName")
-    List<RecipesWithProducts> findByProduct(String productName);
     List<RecipesWithProducts> findByRecipe_Menu_Id(Long menuId);
-    // Найти общее количество продуктов для конкретного рецепта
-    @Query("SELECT SUM(rwp.quantityOfProduct) FROM RecipesWithProducts rwp WHERE rwp.recipe.id = :recipeId")
-    Integer getQuantityByRecipeId(@Param("recipeId") Long recipeId);
-
-
-        List<RecipesWithProducts> findByRecipeId(Long recipeId);
-
-    @Query("SELECT rp FROM RecipesWithProducts rp WHERE rp.recipe.id = :recipeId")
-    List<RecipesWithProducts> findRecipeById(@Param("recipeId") Long recipeId);
-
-    @Query("SELECT p.productName FROM RecipesWithProducts rp JOIN rp.product p WHERE rp.recipe.id = :recipeId")
-    List<String> findProductNamesByRecipeId(@Param("recipeId") Long recipeId);
-
-    List<RecipesWithProducts> findByRecipe_Id(Long id);
+    List<RecipesWithProducts> findByProduct_ProductName(String productName);
 }
 
