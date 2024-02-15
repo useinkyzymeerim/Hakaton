@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecipeWithProductsServiceImpl implements RecipesWithProductsService {
     private final RecipesWithProductsRepo recipesWithProductsRepo;
-    private final RecipesService recipesService;
     @Override
     public RecipesWithProducts findById(Long id) {
         return recipesWithProductsRepo.findById(id).orElse(null);

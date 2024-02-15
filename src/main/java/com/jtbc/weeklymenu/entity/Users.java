@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -14,8 +15,8 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private  String userName;
-    private String password;
-    // Однонаправленное отношение один ко многим
+    private Date removeDate;
+
     @OneToMany(mappedBy = "user")
     private Set<Recipes> recipes;
 }

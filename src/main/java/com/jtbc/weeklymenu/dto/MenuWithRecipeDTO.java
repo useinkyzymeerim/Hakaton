@@ -7,5 +7,5 @@ import java.util.List;
 public class MenuWithRecipeDTO {
     private Long menuId;
     private String nameOfMenu;
-    private List<RecipesDTO> recipes;
+    private List<RecipesDto> recipes;
 }

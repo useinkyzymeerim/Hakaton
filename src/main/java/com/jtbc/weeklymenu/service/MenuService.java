@@ -12,10 +12,13 @@ import java.util.Map;
 public interface MenuService {
 
         List<MenuDTO> findAll() throws Exception;
-        List<MenuDTO> getAllMenus();
+
         List<MenuWithRecipeDTO> getMenuWithRecipes(Long menuId);
 
         MenuDTO findById(Long id);
          Map<Products, Integer> calculateRequiredProductsForMenu (Long id);
+         Long create(MenuDTO dto) throws NullPointerException;
+    String delete(Long id);
+
 
 }
