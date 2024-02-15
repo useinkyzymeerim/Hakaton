@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RecipesRepo extends JpaRepository<Recipes,Long> {
@@ -19,6 +20,9 @@ public interface RecipesRepo extends JpaRepository<Recipes,Long> {
                 "WHERE r.id = :recipeId")
     List<RecipeDetailsDTO> findRecipeDetails(@Param("recipeId") Long recipeId);
     List<Recipes> findByNameOfFoodIgnoreCase(String recipeName);
+
+    Optional<Recipes> findRecipesByRemoveDateIsNullAndId(Long id);
+    List<Recipes> findAllAndBOrderByRemoveDateIsNull();
 }
 
 

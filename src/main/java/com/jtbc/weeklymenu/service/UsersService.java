@@ -7,8 +7,10 @@ import java.util.List;
 
 
 public interface UsersService {
-    Users findById(Long id);
-    List<UsersDTO> findAll();
+    UsersDTO findById(Long id);
+    List<UsersDTO> findAll() throws Exception;
+    Long create(UsersDTO userDTO) throws NullPointerException;
+    String delete(Long id);
 
 
 

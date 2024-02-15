@@ -2,7 +2,7 @@ package com.jtbc.weeklymenu.service.impl;
 
 import com.jtbc.weeklymenu.dto.MenuDTO;
 import com.jtbc.weeklymenu.dto.MenuWithRecipeDTO;
-import com.jtbc.weeklymenu.dto.RecipesDTO;
+import com.jtbc.weeklymenu.dto.RecipesDto;
 import com.jtbc.weeklymenu.entity.Menu;
 import com.jtbc.weeklymenu.entity.Products;
 import com.jtbc.weeklymenu.entity.Recipes;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -23,7 +22,66 @@ public class MenuServiceImpl implements MenuService {
     private final MenuRepo menuRepo;
     private final RecipesWithProductsRepo recipesWithProductsRepo;
 
+    @Override
+    public Long create(MenuDTO dto) throws NullPointerException {
+        if (dto.getId() == null) {
+            Menu menu = new Menu();
+            menu.setNameOfMenu(dto.getNameOfMenu());
+            menu = menuRepo.save(menu);
+            return menu.getId();
+        } else {
+            return update(dto);
+        }
+    }
+    private Long update(MenuDTO dto) throws NullPointerException {
+        Optional<Menu> optionalMenu = menuRepo.findById(dto.getId());
 
+        if (optionalMenu.isPresent()) {
+            Menu menu = optionalMenu.get();
+            menu.setNameOfMenu(dto.getNameOfMenu());
+            return menuRepo.save(menu).getId();
+
+        } else throw new NullPointerException(String.format("Меню с id %s не найдена", dto.getId()));
+    }
+    public String delete(Long id) {
+        Optional<Menu> optionalMenu = menuRepo.findById(id);
+
+        if (optionalMenu.isPresent()) {
+            Menu menu = optionalMenu.get();
+            menu.setRemoveDate(new Date(System.currentTimeMillis()));
+            menuRepo.save(menu);
+
+        } else throw new NullPointerException(String.format("Меню с id %s не найдена", id));
+        return "Deleted";
+    }
+
+    public MenuDTO findById(Long id) {
+        Optional<Menu> menu = menuRepo.findMenuByRemoveDateIsNullAndId(id);
+
+        var dto = new MenuDTO();
+        if (menu.isPresent()) {
+            dto = new MenuDTO(
+                    menu.get().getId(),
+                    menu.get().getNameOfMenu()
+            );
+        } else throw new NullPointerException(String.format("Меню с id %s не найдена", id));
+        return dto;
+    }
+    public List<MenuDTO> findAll() throws Exception {
+        var list = menuRepo.findAllAndBOrderByRemoveDateIsNull();
+
+        List<MenuDTO> dtoList = new ArrayList<>();
+
+        for (Menu menu : list) {
+            var dto = new MenuDTO(
+                    menu.getId(),
+                    menu.getNameOfMenu()
+            );
+            dtoList.add(dto);
+        }
+        return dtoList;
+
+    }
 
 
 
@@ -47,15 +105,9 @@ public class MenuServiceImpl implements MenuService {
             return productQuantityMap;
         }
 
-    @Override
-    public List<MenuDTO> findAll() throws Exception {
-        return null;
-    }
 
-    @Override
-    public List<MenuDTO> getAllMenus() {
-        return null;
-    }
+
+
 
     @Override
     public List<MenuWithRecipeDTO> getMenuWithRecipes(Long menuId) {
@@ -67,10 +119,10 @@ public class MenuServiceImpl implements MenuService {
             menuWithRecipesDTO.setMenuId(menu.getId());
             menuWithRecipesDTO.setNameOfMenu(menu.getNameOfMenu());
 
-            List<RecipesDTO> recipeDTOList = new ArrayList<>();
+            List<RecipesDto> recipeDTOList = new ArrayList<>();
             for (Recipes recipe : menu.getRecipes()) {
-                RecipesDTO recipeDTO = new RecipesDTO();
-                recipeDTO.setRecipeId(recipe.getId());
+                RecipesDto recipeDTO = new RecipesDto();
+                recipeDTO.setId(recipe.getId());
                 recipeDTO.setNameOfFood(recipe.getNameOfFood());
                 recipeDTOList.add(recipeDTO);
             }
@@ -82,10 +134,9 @@ public class MenuServiceImpl implements MenuService {
         return menuWithRecipesDTOList;
     }
 
-    @Override
-    public MenuDTO findById(Long id) {
-        return null;
-    }
+
+
+
 
 }
 

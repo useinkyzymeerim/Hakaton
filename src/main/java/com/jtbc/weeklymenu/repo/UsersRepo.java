@@ -1,5 +1,6 @@
 package com.jtbc.weeklymenu.repo;
 
+import com.jtbc.weeklymenu.entity.Menu;
 import com.jtbc.weeklymenu.entity.Users;
 import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,7 @@ public interface UsersRepo extends JpaRepository<Users,Long> {
 
     @Query("SELECT u FROM Users u LEFT JOIN FETCH u.recipes WHERE u.id = :userId")
     Optional<User> findByIdWithRecipes(@Param("userId") Long userId);
+
+    Optional<Users> findUserByRemoveDateIsNullAndId(Long id);
+    List<Users> findAllAndBOrderByRemoveDateIsNull();
 }
