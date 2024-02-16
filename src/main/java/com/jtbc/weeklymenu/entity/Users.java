@@ -14,7 +14,8 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private  String userName;
+    private String userName;
+    private String password;
     private Date removeDate;
 
     @OneToMany(mappedBy = "user")

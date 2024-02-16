@@ -1,6 +1,7 @@
 package com.jtbc.weeklymenu.controller;
 
 import com.jtbc.weeklymenu.dto.UsersDTO;
+import com.jtbc.weeklymenu.entity.Users;
 import com.jtbc.weeklymenu.service.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -50,19 +51,20 @@ public class UsersController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Пользователи умпешно получены",
+                    description = "Пользователи умпешно создон",
                     content = {@Content(mediaType = "application/json")})
     })
     @Operation(summary = "Этот роут для Create Users")
-    @PostMapping("/createUsers")
-    public ResponseEntity<Long> createUser(@RequestBody UsersDTO userDTO) throws NullPointerException {
+    @PostMapping("/createUsersWithPassword")
+    public ResponseEntity<Long> createUser(@RequestBody Users users) throws NullPointerException {
         try {
-            Long savedId = usersService.create(userDTO);
+            Long savedId = usersService.create(users);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedId);
         } catch (NullPointerException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",

@@ -110,8 +110,8 @@ public class MenuController {
         try{
             return menuService.findById(id);
 
-        }catch (NullPointerException exceptione){
-            System.out.println(exceptione.getMessage());
+        }catch (NullPointerException exception){
+            System.out.println(exception.getMessage());
             return new MenuDTO();
         }
     }

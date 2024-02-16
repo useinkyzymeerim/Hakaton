@@ -58,7 +58,12 @@ public class ProductsController {
         String result = productService.delete(id);
         return ResponseEntity.ok(result);
     }
-
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "записи успешно получены",
+                    content = {@Content(mediaType = "application/json")})
+    })
     @Operation(summary = "Этот роут находит продукт по ID ")
     @GetMapping("/{id}")
 

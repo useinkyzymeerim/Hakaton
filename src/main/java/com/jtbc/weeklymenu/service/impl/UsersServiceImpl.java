@@ -83,4 +83,29 @@ public class UsersServiceImpl implements UsersService {
         } else throw new NullPointerException(String.format("Пользователь с id %s не найдена", id));
         return dto;
     }
+
+    @Override
+    public Long create(Users users) throws NullPointerException {
+        if (users.getId() == null) {
+            Users users1 = new Users();
+            users1.setUserName(users.getUserName());
+            users1.setPassword(users.getPassword());
+            users1 = usersRepo.save(users1);
+            return users1.getId();
+        } else {
+            return update(users);
+        }
+    }
+
+    private Long update(Users users) throws NullPointerException {
+        Optional<Users> optionalUsers = usersRepo.findById(users.getId());
+
+        if (optionalUsers.isPresent()) {
+            Users users1 = optionalUsers.get();
+            users1.setUserName(users.getUserName());
+            users1.setPassword(users.getPassword());
+            return usersRepo.save(users1).getId();
+
+        } else throw new NullPointerException(String.format("Пользователь с id %s не найдена", users.getId()));
+    }
 }

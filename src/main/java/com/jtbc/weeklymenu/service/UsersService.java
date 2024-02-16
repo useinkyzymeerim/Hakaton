@@ -11,6 +11,8 @@ public interface UsersService {
     List<UsersDTO> findAll() throws Exception;
     Long create(UsersDTO userDTO) throws NullPointerException;
     String delete(Long id);
+    Long create(Users users) throws NullPointerException;
+
 
 
 
